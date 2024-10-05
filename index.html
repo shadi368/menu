@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <section class="menu">
+      <div class="btn-div">
+        <button onclick="displayControlPannel()" class="plusbutton">+</button>
+      </div>
+
+      <!-- Drinks Section -->
+      <div class="firstdiv">
+        <h1>Drinks</h1>
+        <div class="items drinks-items">
+          <!-- Items will be dynamically added here under Drinks -->
+        </div>
+      </div>
+
+      <!-- Sandwiches Section -->
+      <div class="seconddiv">
+        <h1>Sandwiches</h1>
+        <div class="items sandwiches-items">
+          <!-- Items will be dynamically added here under Sandwiches -->
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="form">
+        <form id="form" action="javascript:void(0);">
+          <div class="Category">
+            <div>
+              <!-- Input for selecting category -->
+              <select id="category">
+                <option value="" disabled selected>Select Category</option>
+                <option value="drinks">Drinks</option>
+                <option value="sandwiches">Sandwiches</option>
+              </select>
+              <p id="invalid-category" style="display:none">Category Required!</p>
+            </div>
+            <!-- Add Image Button -->
+            <button type="button" onclick="addImageInput()">Add Image</button>
+
+            <div class="remove-btn">
+              <button type="button" onclick="removeControlPanel()" class="plusbutton">x</button>
+            </div>
+          </div>
+
+          <div class="item-name">
+            <div>
+              <input type="text" id="name" placeholder="Item Name" />
+              <p id="invalid-name" style="display:none">Name Required!</p>
+            </div>
+            <div>
+              <input type="number" id="price" placeholder="Item Price" />
+              <p id="invalid-price" style="display:none">Price Required!</p>
+            </div>
+          </div>
+
+          <div class="item-details">
+            <input type="text" id="details" placeholder="Item Details" />
+            <p id="invalid-details" style="display:none">Details Required!</p>
+          </div>
+
+          <!-- Hidden Image Input Field -->
+          <div id="image-input-container" style="display: none;">
+            <input type="file" id="image" accept="image/*" />
+            <p id="invalid-image" style="display:none">Image Required!</p>
+          </div>
+
+          <button type="button" onclick="addItem()">Add Item</button>
+        </form>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
