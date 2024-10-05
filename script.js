@@ -1,65 +1,49 @@
 let itemsArray = []; // Global array to store the added items
 
 function displayControlPannel() {
-    let controlPanel = document.getElementById("form");
-    controlPanel.style.display = "flex";
+    let controlPanel = document.querySelector(".form");
+    controlPanel.classList.remove("hidden");
 }
 
 function removeControlPanel() {
-    let controlPanel = document.getElementById("form");
-    controlPanel.style.display = "none";
+    let controlPanel = document.querySelector(".form");
+    controlPanel.classList.add("hidden");
 }
 
 function addImageInput() {
-    // Show the hidden image input field
     let imageInputContainer = document.getElementById('image-input-container');
-    imageInputContainer.style.display = 'block';
+    imageInputContainer.classList.remove('hidden'); // Use Tailwind's hidden class
 }
 
 function addItem() {
-    // Get the values from the input fields
     let itemCategory = document.getElementById('category').value.trim();
     let itemName = document.getElementById('name').value.trim();
     let itemPrice = document.getElementById('price').value.trim();
     let itemDetails = document.getElementById('details').value.trim();
-    let itemImage = document.getElementById('image').files[0]; // Get the image file
+    let itemImage = document.getElementById('image').files[0];
 
-    // Run validation before proceeding
     let isValid = validateItems();
 
-    // If the form is valid, proceed with adding the item
     if (isValid) {
-        // Convert image to base64
         let reader = new FileReader();
         reader.onload = function(event) {
             let imageUrl = event.target.result;
-
-            // Add the item to the array
             let newItem = {
                 category: itemCategory,
                 name: itemName,
                 price: itemPrice,
                 details: itemDetails,
-                image: imageUrl // Store the base64 image data
+                image: imageUrl
             };
 
-            // Push the new item to the array
             itemsArray.push(newItem);
-
-            // Display the updated items in the appropriate category
             displayItems();
-
-            // Alert success message
-
-            // Optionally, hide the control panel after adding an item
-            removeControlPanel();
+            removeControlPanel(); // Hide the form after adding
         };
-        
-        // Read the image as base64 if an image was uploaded
+
         if (itemImage) {
             reader.readAsDataURL(itemImage);
         } else {
-            // If no image is uploaded, proceed without an image
             let newItem = {
                 category: itemCategory,
                 name: itemName,
@@ -82,70 +66,54 @@ function validateItems() {
     let itemPrice = document.getElementById('price').value.trim();
     let itemDetails = document.getElementById('details').value.trim();
 
-    let isValid = true; // Flag to track if form is valid
+    let isValid = true;
 
-    // Clear previous error messages
-    document.getElementById('invalid-category').style.display = 'none';
-    document.getElementById('invalid-name').style.display = 'none';
-    document.getElementById('invalid-price').style.display = 'none';
-    document.getElementById('invalid-details').style.display = 'none';
+    document.getElementById('invalid-category').classList.add('hidden');
+    document.getElementById('invalid-name').classList.add('hidden');
+    document.getElementById('invalid-price').classList.add('hidden');
+    document.getElementById('invalid-details').classList.add('hidden');
 
-    // Validate item category (not empty)
     if (itemCategory === "") {
-        document.getElementById('invalid-category').style.display = 'block';
+        document.getElementById('invalid-category').classList.remove('hidden');
         isValid = false;
     }
 
-    // Validate item name (not empty)
     if (itemName === "") {
-        document.getElementById('invalid-name').style.display = 'block';
+        document.getElementById('invalid-name').classList.remove('hidden');
         isValid = false;
     }
 
-    // Validate item price (not empty and a valid positive number)
-    if (itemPrice === "") {
-        document.getElementById('invalid-price').style.display = 'block';
-        isValid = false;
-    } else if (isNaN(itemPrice) || Number(itemPrice) <= 0) {
-        document.getElementById('invalid-price').style.display = 'block';
+    if (itemPrice === "" || isNaN(itemPrice) || Number(itemPrice) <= 0) {
+        document.getElementById('invalid-price').classList.remove('hidden');
         isValid = false;
     }
 
-    // Validate item details (not empty)
     if (itemDetails === "") {
-        document.getElementById('invalid-details').style.display = 'block';
+        document.getElementById('invalid-details').classList.remove('hidden');
         isValid = false;
     }
 
-    return isValid; // Return false if invalid, true if valid
+    return isValid;
 }
 
 function displayItems() {
-    // Clear both sections before displaying updated items
     document.querySelector('.drinks-items').innerHTML = '';
     document.querySelector('.sandwiches-items').innerHTML = '';
 
-    // Loop through itemsArray and display each item in the appropriate section
     itemsArray.forEach((item, index) => {
-        // Create an item div
         let itemDiv = document.createElement('div');
-        itemDiv.classList.add('item');
+        itemDiv.classList.add('item', 'p-4', 'bg-gray-200', 'rounded-lg', 'shadow-md', 'm-2');
 
-        // Add the content inside the item div
-        let itemImageHTML = item.image ? `<img class="item-img" src="${item.image}" alt="${item.name}" style="max-width: 200px; max-height: 200px;">` : '';
+        let itemImageHTML = item.image ? `<img class="item-img max-w-full max-h-48 mb-3" src="${item.image}" alt="${item.name}">` : '';
 
         itemDiv.innerHTML = `
-            <p class="item-name">${item.name}</p>
-            <p class="description">${item.details}</p>
+            <p class="item-name font-bold text-lg mb-1">${item.name}</p>
+            <p class="description text-sm mb-2">${item.details}</p>
             ${itemImageHTML}
-            <div>
-            <p class="item-price">$${item.price}</p>
-            <button onclick="removeItem(${index})">Order</button>
-            </div>
-            
+            <p class="item-price text-lg font-bold text-yellow-600 mb-2">$${item.price}</p>
+            <button class="bg-red-500 text-white py-1 px-3 rounded" onclick="removeItem(${index})">Order</button>
         `;
 
-        // Append the new item to the correct category section
         if (item.category === 'drinks') {
             document.querySelector('.drinks-items').appendChild(itemDiv);
         } else if (item.category === 'sandwiches') {
@@ -155,9 +123,6 @@ function displayItems() {
 }
 
 function removeItem(index) {
-    // Remove the item from the array
     itemsArray.splice(index, 1);
-
-    // Update the displayed items
     displayItems();
 }
