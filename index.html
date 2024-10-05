@@ -4,75 +4,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Menu</title>
-    <link rel="stylesheet" href="style.css" />
+    <!-- Include Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <section class="menu">
-      <div class="btn-div">
-        <button onclick="displayControlPannel()" class="plusbutton">+</button>
+  <body class="bg-yellow-300 p-10 font-sans">
+    <section class="menu flex flex-col items-center gap-10 bg-black p-5 rounded-lg w-4/5 mx-auto">
+      <!-- Button to open the form -->
+      <div class="btn-div flex justify-end w-full">
+        <button onclick="displayControlPannel()" class="plusbutton bg-yellow-300 text-black py-2 px-3 rounded-full">
+          +
+        </button>
       </div>
 
       <!-- Drinks Section -->
-      <div class="firstdiv">
-        <h1>Drinks</h1>
-        <div class="items drinks-items">
+      <div class="firstdiv text-center w-full">
+        <h1 class="text-2xl mb-5 text-white">Drinks</h1>
+        <div class="items drinks-items flex gap-7 justify-center">
           <!-- Items will be dynamically added here under Drinks -->
         </div>
       </div>
 
       <!-- Sandwiches Section -->
-      <div class="seconddiv">
-        <h1>Sandwiches</h1>
-        <div class="items sandwiches-items">
+      <div class="seconddiv text-center w-full">
+        <h1 class="text-2xl mb-5 text-white">Sandwiches</h1>
+        <div class="items sandwiches-items flex gap-7 justify-center">
           <!-- Items will be dynamically added here under Sandwiches -->
         </div>
       </div>
     </section>
 
-    <section>
-      <div class="form">
-        <form id="form" action="javascript:void(0);">
-          <div class="Category">
+    <section class="flex justify-center mt-10">
+      <div class="form hidden flex-col gap-12 bg-gray-500 w-[500px] p-5 rounded-lg mx-auto">
+        <form id="form" action="javascript:void(0);" class="flex flex-col gap-7">
+          <div class="Category flex gap-7">
             <div>
               <!-- Input for selecting category -->
-              <select id="category">
+              <select id="category" class="p-2 rounded-lg">
                 <option value="" disabled selected>Select Category</option>
                 <option value="drinks">Drinks</option>
                 <option value="sandwiches">Sandwiches</option>
               </select>
-              <p id="invalid-category" style="display:none">Category Required!</p>
+              <p id="invalid-category" class="text-red-500 hidden">Category Required!</p>
             </div>
             <!-- Add Image Button -->
-            <button type="button" onclick="addImageInput()">Add Image</button>
+            <button type="button" onclick="addImageInput()" class="bg-yellow-300 text-black py-2 px-3 rounded-lg">
+              Add Image
+            </button>
+          </div>
 
-            <div class="remove-btn">
-              <button type="button" onclick="removeControlPanel()" class="plusbutton">x</button>
+          <div class="item-name flex gap-7">
+            <div>
+              <input type="text" id="name" placeholder="Item Name" class="p-2 rounded-lg" />
+              <p id="invalid-name" class="text-red-500 hidden">Name Required!</p>
+            </div>
+            <div>
+              <input type="number" id="price" placeholder="Item Price" class="p-2 rounded-lg" />
+              <p id="invalid-price" class="text-red-500 hidden">Price Required!</p>
             </div>
           </div>
 
-          <div class="item-name">
-            <div>
-              <input type="text" id="name" placeholder="Item Name" />
-              <p id="invalid-name" style="display:none">Name Required!</p>
-            </div>
-            <div>
-              <input type="number" id="price" placeholder="Item Price" />
-              <p id="invalid-price" style="display:none">Price Required!</p>
-            </div>
-          </div>
-
-          <div class="item-details">
-            <input type="text" id="details" placeholder="Item Details" />
-            <p id="invalid-details" style="display:none">Details Required!</p>
+          <div class="item-details flex flex-col gap-7">
+            <input type="text" id="details" placeholder="Item Details" class="p-2 rounded-lg" />
+            <p id="invalid-details" class="text-red-500 hidden">Details Required!</p>
           </div>
 
           <!-- Hidden Image Input Field -->
-          <div id="image-input-container" style="display: none;">
-            <input type="file" id="image" accept="image/*" />
-            <p id="invalid-image" style="display:none">Image Required!</p>
+          <div id="image-input-container" class="hidden">
+            <input type="file" id="image" accept="image/*" class="p-2 rounded-lg" />
+            <p id="invalid-image" class="text-red-500 hidden">Image Required!</p>
           </div>
 
-          <button type="button" onclick="addItem()">Add Item</button>
+          <button type="button" onclick="addItem()" class="bg-yellow-300 text-black py-2 px-3 rounded-lg">
+            Add Item
+          </button>
         </form>
       </div>
     </section>
