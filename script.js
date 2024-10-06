@@ -1,128 +1,142 @@
 let itemsArray = []; // Global array to store the added items
+let totalPrice = 0; // Initialize the total price
+let orderSection = document.createElement('div');
+let totalPriceDiv = document.createElement('div');
 
+// Cache frequently used elements
+const controlPanel = document.querySelector(".form");
+const drinksItemsContainer = document.querySelector('.drinks-items');
+const sandwichesItemsContainer = document.querySelector('.sandwiches-items');
+const body = document.body;
+
+// Initialize order section and total price div
+function initializeOrderUI() {
+    orderSection.classList.add('order-items', 'w-full', 'mt-10', 'p-5', 'bg-white', 'rounded-lg', 'shadow-lg');
+    totalPriceDiv.classList.add('total-price', 'text-lg', 'font-bold', 'text-yellow-600', 'mt-5');
+    body.appendChild(orderSection);
+    body.appendChild(totalPriceDiv);
+}
+
+// Show control panel
 function displayControlPannel() {
-    let controlPanel = document.querySelector(".form");
     controlPanel.classList.remove("hidden");
 }
 
+// Hide control panel
 function removeControlPanel() {
-    let controlPanel = document.querySelector(".form");
     controlPanel.classList.add("hidden");
 }
 
+// Show image input
 function addImageInput() {
-    let imageInputContainer = document.getElementById('image-input-container');
-    imageInputContainer.classList.remove('hidden'); // Use Tailwind's hidden class
+    document.getElementById('image-input-container').classList.remove('hidden');
 }
 
-function addItem() {
-    let itemCategory = document.getElementById('category').value.trim();
-    let itemName = document.getElementById('name').value.trim();
-    let itemPrice = document.getElementById('price').value.trim();
-    let itemDetails = document.getElementById('details').value.trim();
-    let itemImage = document.getElementById('image').files[0];
-
-    let isValid = validateItems();
-
-    if (isValid) {
-        let reader = new FileReader();
-        reader.onload = function(event) {
-            let imageUrl = event.target.result;
-            let newItem = {
-                category: itemCategory,
-                name: itemName,
-                price: itemPrice,
-                details: itemDetails,
-                image: imageUrl
-            };
-
-            itemsArray.push(newItem);
-            displayItems();
-            removeControlPanel(); // Hide the form after adding
-        };
-
-        if (itemImage) {
-            reader.readAsDataURL(itemImage);
-        } else {
-            let newItem = {
-                category: itemCategory,
-                name: itemName,
-                price: itemPrice,
-                details: itemDetails,
-                image: null // No image provided
-            };
-
-            itemsArray.push(newItem);
-            displayItems();
-            alert("Item added successfully!");
-            removeControlPanel();
-        }
-    }
-}
-
+// Validate item input
 function validateItems() {
-    let itemCategory = document.getElementById('category').value.trim();
-    let itemName = document.getElementById('name').value.trim();
-    let itemPrice = document.getElementById('price').value.trim();
-    let itemDetails = document.getElementById('details').value.trim();
-
+    const fields = {
+        category: document.getElementById('category'),
+        name: document.getElementById('name'),
+        price: document.getElementById('price'),
+        details: document.getElementById('details')
+    };
     let isValid = true;
 
-    document.getElementById('invalid-category').classList.add('hidden');
-    document.getElementById('invalid-name').classList.add('hidden');
-    document.getElementById('invalid-price').classList.add('hidden');
-    document.getElementById('invalid-details').classList.add('hidden');
+    // Hide all invalid messages
+    Object.keys(fields).forEach(field => document.getElementById(`invalid-${field}`).classList.add('hidden'));
 
-    if (itemCategory === "") {
-        document.getElementById('invalid-category').classList.remove('hidden');
-        isValid = false;
-    }
-
-    if (itemName === "") {
-        document.getElementById('invalid-name').classList.remove('hidden');
-        isValid = false;
-    }
-
-    if (itemPrice === "" || isNaN(itemPrice) || Number(itemPrice) <= 0) {
-        document.getElementById('invalid-price').classList.remove('hidden');
-        isValid = false;
-    }
-
-    if (itemDetails === "") {
-        document.getElementById('invalid-details').classList.remove('hidden');
-        isValid = false;
-    }
+    // Check for invalid inputs
+    Object.keys(fields).forEach(field => {
+        if (!fields[field].value.trim() || (field === 'price' && (isNaN(fields[field].value) || Number(fields[field].value) <= 0))) {
+            document.getElementById(`invalid-${field}`).classList.remove('hidden');
+            isValid = false;
+        }
+    });
 
     return isValid;
 }
 
+// Add new item
+function addItem() {
+    if (!validateItems()) return;
+
+    const item = {
+        category: document.getElementById('category').value.trim(),
+        name: document.getElementById('name').value.trim(),
+        price: document.getElementById('price').value.trim(),
+        details: document.getElementById('details').value.trim(),
+        image: null
+    };
+
+    // Handle image file
+    const itemImage = document.getElementById('image').files[0];
+    if (itemImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            item.image = e.target.result;
+            itemsArray.push(item);
+            displayItems();
+        };
+        reader.readAsDataURL(itemImage);
+    } else {
+        itemsArray.push(item);
+    }
+
+    displayItems();
+    removeControlPanel();
+}
+
+// Display items for drinks and sandwiches
 function displayItems() {
-    document.querySelector('.drinks-items').innerHTML = '';
-    document.querySelector('.sandwiches-items').innerHTML = '';
+    drinksItemsContainer.innerHTML = '';
+    sandwichesItemsContainer.innerHTML = '';
 
     itemsArray.forEach((item, index) => {
-        let itemDiv = document.createElement('div');
-        itemDiv.classList.add('item', 'p-4', 'bg-gray-200', 'rounded-lg', 'shadow-md', 'm-2');
-
-        let itemImageHTML = item.image ? `<img class="item-img max-w-full max-h-48 mb-3" src="${item.image}" alt="${item.name}">` : '';
-
-        itemDiv.innerHTML = `
-            <p class="item-name font-bold text-lg mb-1">${item.name}</p>
-            <p class="description text-sm mb-2">${item.details}</p>
-            ${itemImageHTML}
-            <p class="item-price text-lg font-bold text-yellow-600 mb-2">$${item.price}</p>
-            <button class="bg-red-500 text-white py-1 px-3 rounded" onclick="removeItem(${index})">Order</button>
-        `;
-
-        if (item.category === 'drinks') {
-            document.querySelector('.drinks-items').appendChild(itemDiv);
-        } else if (item.category === 'sandwiches') {
-            document.querySelector('.sandwiches-items').appendChild(itemDiv);
-        }
+        const itemDiv = createItemElement(item, index);
+        (item.category === 'drinks' ? drinksItemsContainer : sandwichesItemsContainer).appendChild(itemDiv);
     });
 }
 
+// Create item element (both for display and order section)
+function createItemElement(item, index) {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('item', 'p-4', 'bg-gray-200', 'rounded-lg', 'shadow-md', 'm-2');
+
+    let itemImageHTML = item.image ? `<img class="item-img max-w-full max-h-48 mb-3" src="${item.image}" alt="${item.name}">` : '';
+
+    itemDiv.innerHTML = `
+        <p class="item-name font-bold text-lg mb-1">${item.name}</p>
+        <p class="description text-sm mb-2">${item.details}</p>
+        ${itemImageHTML}
+        <p class="item-price text-lg font-bold text-yellow-600 mb-2">$${item.price}</p>
+        <button class="bg-red-500 text-white py-1 px-3 rounded" onclick="orderItem(${index})">Order</button>
+        <button class="bg-red-500 text-white py-1 px-3 rounded" onclick="removeItem(${index})">Remove</button>
+    `;
+    return itemDiv;
+}
+
+// Order an item
+function orderItem(index) {
+    const orderedItem = itemsArray[index];
+    const orderedDiv = createItemElement(orderedItem, index);
+    orderSection.appendChild(orderedDiv);
+
+    totalPrice += parseFloat(orderedItem.price);
+    getTotalPrice();
+}
+
+// Display the total price
+function getTotalPrice() {
+    totalPriceDiv.textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+}
+
+// Remove an item from the array
 function removeItem(index) {
+    totalPrice -= parseFloat(itemsArray[index].price);
     itemsArray.splice(index, 1);
     displayItems();
+    getTotalPrice();
 }
+
+// Initialize the order section when the page loads
+initializeOrderUI();

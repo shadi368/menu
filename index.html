@@ -10,7 +10,7 @@
   <body class="bg-yellow-300 p-10 font-sans">
     <section class="menu flex flex-col items-center gap-10 bg-black p-5 rounded-lg w-4/5 mx-auto">
       <!-- Button to open the form -->
-      <div class="btn-div flex justify-end w-full">
+      <div class="btn-div flex justify-end w-full relative">
         <button onclick="displayControlPannel()" class="plusbutton bg-yellow-300 text-black py-2 px-3 rounded-full">
           +
         </button>
@@ -31,12 +31,13 @@
           <!-- Items will be dynamically added here under Sandwiches -->
         </div>
       </div>
-    </section>
-
-    <section class="flex justify-center mt-10">
-      <div class="form hidden flex-col gap-12 bg-gray-500 w-[500px] p-5 rounded-lg mx-auto">
+   
+      <div class="form hidden flex-col gap-12 bg-gray-500 w-[500px] p-5 rounded-lg mx-auto absolute">
+        
         <form id="form" action="javascript:void(0);" class="flex flex-col gap-7">
+          
           <div class="Category flex gap-7">
+           
             <div>
               <!-- Input for selecting category -->
               <select id="category" class="p-2 rounded-lg">
@@ -49,6 +50,9 @@
             <!-- Add Image Button -->
             <button type="button" onclick="addImageInput()" class="bg-yellow-300 text-black py-2 px-3 rounded-lg">
               Add Image
+            </button>
+            <button class="clos-btn bg-yellow-300 text-black py-2 px-3 rounded-full" onclick="removeControlPanel()">
+              x
             </button>
           </div>
 
@@ -63,7 +67,7 @@
             </div>
           </div>
 
-          <div class="item-details flex flex-col gap-7">
+          <div class="item-details flex flex-col ">
             <input type="text" id="details" placeholder="Item Details" class="p-2 rounded-lg" />
             <p id="invalid-details" class="text-red-500 hidden">Details Required!</p>
           </div>
